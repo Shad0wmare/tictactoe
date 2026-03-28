@@ -160,19 +160,27 @@ function drawSVGLine(combo) {
     const lineEl = document.getElementById("winning-line");
     const cellSize = 100;
     const gap = 5;
-    // Полный размер игрового поля: 100*3 + 5*2 = 310px
-    const boardSize = 3 * cellSize + 2 * gap; 
-    const centerOffset = cellSize / 2; // Центр первой ячейки (50px)
+    const boardSize = 310; // Фиксированный размер 3*100 + 2*5
+    const centerOffset = 50; // Центр первой ячейки
 
     lineEl.style.display = 'block';
-    lineEl.className = 'winning-line'; // Сброс классов
+    lineEl.className = 'winning-line'; 
     lineEl.classList.add(combo.type === 'h' ? 'horizontal' : 
                          combo.type === 'v' ? 'vertical' : 'diagonal');
+
+    // Сбрасываем стили от предыдущих отрисовок
+    lineEl.style.top = "";
+    lineEl.style.left = "";
+    lineEl.style.right = "";
+    lineEl.style.width = "0";
+    lineEl.style.height = "0";
+    lineEl.style.transform = "";
 
     if (combo.type === 'h') {
         const topPos = combo.lineIdx * (cellSize + gap) + centerOffset;
         lineEl.style.top = `${topPos}px`;
         lineEl.style.left = "0";
+        // 100% теперь будет равно 310px, так как .board ограничен
         setTimeout(() => lineEl.style.width = '100%', 10);
 
     } else if (combo.type === 'v') {
@@ -183,18 +191,14 @@ function drawSVGLine(combo) {
 
     } else if (combo.type === 'd') {
         const diagLength = Math.sqrt(Math.pow(boardSize, 2) + Math.pow(boardSize, 2));
+        lineEl.style.top = "0";
         
         if (combo.lineIdx === 0) {
-            // ГЛАВНАЯ (с 0,0 в 8,8)
             lineEl.style.left = "0";
-            lineEl.style.top = "0";
             lineEl.style.transform = "rotate(-45deg)";
         } else {
-            // ПОБОЧНАЯ (с 2,0 в 6,6)
-            // Чтобы линия шла из правого верхнего угла, 
-            // мы ставим её в правый край и крутим на 45 градусов
-            lineEl.style.left = `${boardSize}px`; 
-            lineEl.style.top = "0";
+            // Для побочной диагонали ставим точку в правый верхний угол
+            lineEl.style.left = `${boardSize}px`;
             lineEl.style.transform = "rotate(45deg)";
         }
         setTimeout(() => lineEl.style.height = `${diagLength}px`, 10);

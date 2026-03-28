@@ -3,8 +3,10 @@
     display: grid; 
     grid-template-columns: repeat(3, 100px); 
     grid-gap: 5px; 
-    margin: 20px 0;
-    position: relative; /* ВАЖНО для позиционирования линии внутри */
+    margin: 20px auto; /* Центрируем поле на странице */
+    position: relative; /* КРИТИЧЕСКИ ВАЖНО: линия будет внутри этого блока */
+    width: 310px;       /* Фиксируем ширину (3*100 + 2*5) */
+    height: 310px;      /* Фиксируем высоту */
 }
 
 .cell { 
@@ -30,20 +32,22 @@
 /* Горизонтальные линии */
 .winning-line.horizontal {
     height: 5px;
-    width: 0; /* Анимируется до 100% в JS */
+    width: 0; /* Анимируется до 100% (т.е. до 310px) */
     left: 0;
+    margin-top: -3px; /* Центрируем саму толщину линии */
 }
 
 /* Вертикальные линии */
 .winning-line.vertical {
-    width: 5px;
-    height: 0; /* Анимируется до 100% в JS */
+    width: 6px;
+    height: 0; /* Анимируется до 100% */
     top: 0;
+    margin-left: -3px; /* Центрируем саму толщину линии */
 }
 
 /* Диагональные линии (длина вычисляется по Пифагору: sqrt(310^2 + 310^2) approx 438) */
 .winning-line.diagonal {
-    width: 5px;
+    width: 6px;
     height: 0;
     /* Указываем, что точка вращения — левый верхний угол */
     transform-origin: 0 0; 
