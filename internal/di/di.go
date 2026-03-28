@@ -27,8 +27,8 @@ func StartServer(handler *handler.GameHandler) {
 	mux.HandleFunc("POST /game/{id}", handler.MakeMove)
 	mux.HandleFunc("GET /game/{id}", handler.GetGame)
 
-	log.Println("Сервер запущен на :8080")
-	log.Fatal(http.ListenAndServe(":8080", enableCORS(mux)))
+	log.Println("Сервер запущен на :80")
+	log.Fatal(http.ListenAndServe(":80", enableCORS(mux)))
 }
 
 func enableCORS(next http.Handler) http.Handler {

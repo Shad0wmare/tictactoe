@@ -1,4 +1,4 @@
-const API_URL = "http://88.218.67.103:8080"; 
+const API_URL = "http://shadowchat.ru"; 
 let currentGame = { id: "", board: [] };
 
 function showScreen(screenId) {
