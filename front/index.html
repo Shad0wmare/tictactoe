@@ -1,25 +1,34 @@
-<div id="app">
-    <h1>Крестики-Нолики (Go app)</h1>
-    
-    <div id="screen-main" class="screen">
-        <button onclick="createNewGame()">Новая игра</button>
-        <button onclick="showScreen('screen-load')">Загрузить игру</button>
-    </div>
-
-    <div id="screen-load" class="screen hidden">
-        <input type="text" id="uuid-field" placeholder="Введите UUID игры">
-        <button onclick="loadGame()">ОК</button>
-        <button onclick="showScreen('screen-main')">Назад</button>
-    </div>
-
-    <div id="screen-game" class="screen hidden">
-        <p>ID: <span id="game-id-display"></span></p>
-        <div id="board" class="board">
-            <div id="winning-line" class="winning-line"></div>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Tic-Tac-Toe Go AI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <h1>Крестики-Нолики (Go app)</h1>
+        <div id="screen-main" class="screen">
+            <button onclick="createNewGame()">Новая игра</button>
+            <button onclick="showScreen('screen-load')">Загрузить игру</button>
         </div>
-        <p id="status-message"></p>
-        <button onclick="showScreen('screen-main')">В меню</button>
+        <div id="screen-load" class="screen hidden">
+            <input type="text" id="uuid-field" placeholder="Введите UUID игры">
+            <button onclick="loadGame()">ОК</button>
+            <br><br>
+            <button onclick="showScreen('screen-main')">В меню</button>
+        </div>
+        <div id="screen-game" class="screen hidden">
+            <p><strong>ID игры:</strong><span id="game-id-display"></span></p>
+            <div id="board" class="board">
+                <div id="winning-line" class="winning-line"></div>
+            </div>
+            <p id="status-message"></p>
+            <button onclick="showScreen('screen-main')">В меню</button>
+        </div>
+        <p id="error-message" class="error"></p>
     </div>
-    
-    <p id="error-message" class="error"></p>
-</div>
+    <script src="app.js"></script>
+</body>
+
+</html>
