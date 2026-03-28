@@ -19,7 +19,3 @@ func NewGame() *Game {
 		Board: [3][3]int{},
 	}
 }
-
-func (g *Game) GameOver() bool {
-	return false
-}
