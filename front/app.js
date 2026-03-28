@@ -160,45 +160,43 @@ function drawSVGLine(combo) {
     const lineEl = document.getElementById("winning-line");
     const cellSize = 100;
     const gap = 5;
-    const boardSize = 3 * cellSize + 2 * gap; // 310px
-    
-    lineEl.style.display = 'block'; // Показываем линию
+    // Полный размер игрового поля: 100*3 + 5*2 = 310px
+    const boardSize = 3 * cellSize + 2 * gap; 
+    const centerOffset = cellSize / 2; // Центр первой ячейки (50px)
+
+    lineEl.style.display = 'block';
+    lineEl.className = 'winning-line'; // Сброс классов
+    lineEl.classList.add(combo.type === 'h' ? 'horizontal' : 
+                         combo.type === 'v' ? 'vertical' : 'diagonal');
 
     if (combo.type === 'h') {
-        // Горизонтальная: смещаем вниз на индекс строки
-        lineEl.classList.add('horizontal');
-        // Центрируем по вертикали внутри строки: index * (size+gap) + size/2
-        const topPos = combo.lineIdx * (cellSize + gap) + cellSize / 2;
+        const topPos = combo.lineIdx * (cellSize + gap) + centerOffset;
         lineEl.style.top = `${topPos}px`;
-        // Запускаем анимацию ширины
+        lineEl.style.left = "0";
         setTimeout(() => lineEl.style.width = '100%', 10);
-        
+
     } else if (combo.type === 'v') {
-        // Вертикальная: смещаем вправо на индекс столбца
-        lineEl.classList.add('vertical');
-        // Центрируем по горизонтали внутри столбца
-        const leftPos = combo.lineIdx * (cellSize + gap) + cellSize / 2;
+        const leftPos = combo.lineIdx * (cellSize + gap) + centerOffset;
         lineEl.style.left = `${leftPos}px`;
-        // Запускаем анимацию высоты
+        lineEl.style.top = "0";
         setTimeout(() => lineEl.style.height = '100%', 10);
-        
+
     } else if (combo.type === 'd') {
-        // Диагональ
-        lineEl.classList.add('diagonal');
         const diagLength = Math.sqrt(Math.pow(boardSize, 2) + Math.pow(boardSize, 2));
         
         if (combo.lineIdx === 0) {
-            // Главная диагональ (сверху-слева вниз-справа)
-            lineEl.style.left = '0';
-            lineEl.style.top = '0';
-            lineEl.style.transform = 'rotate(-45deg)'; // Поворот на 45 градусов
+            // ГЛАВНАЯ (с 0,0 в 8,8)
+            lineEl.style.left = "0";
+            lineEl.style.top = "0";
+            lineEl.style.transform = "rotate(-45deg)";
         } else {
-            // Побочная диагональ (сверху-справа вниз-слева)
-            lineEl.style.right = '0'; // Позиционируем от правого края
-            lineEl.style.top = '0';
-            lineEl.style.transform = 'rotate(45deg)'; // Поворот на 45 градусов
+            // ПОБОЧНАЯ (с 2,0 в 6,6)
+            // Чтобы линия шла из правого верхнего угла, 
+            // мы ставим её в правый край и крутим на 45 градусов
+            lineEl.style.left = `${boardSize}px`; 
+            lineEl.style.top = "0";
+            lineEl.style.transform = "rotate(45deg)";
         }
-        // Запускаем анимацию длины
         setTimeout(() => lineEl.style.height = `${diagLength}px`, 10);
     }
 }

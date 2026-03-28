@@ -44,6 +44,11 @@
 /* Диагональные линии (длина вычисляется по Пифагору: sqrt(310^2 + 310^2) approx 438) */
 .winning-line.diagonal {
     width: 5px;
-    height: 0; /* Анимируется до 438px в JS */
-    transform-origin: top center; /* Точка вращения */
+    height: 0;
+    /* Указываем, что точка вращения — левый верхний угол */
+    transform-origin: 0 0; 
+    position: absolute;
+    top: 0;
+    /* Убираем лишние отступы */
+    margin: 0;
 }
