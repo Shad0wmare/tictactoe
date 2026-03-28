@@ -1,15 +1,41 @@
-.hidden { display: none; }
-.error { color: red; font-weight: bold; }
+/* Родителю (сетке) добавляем относительное позиционирование */
 .board { 
     display: grid; 
     grid-template-columns: repeat(3, 100px); 
     grid-gap: 5px; 
     margin: 20px 0;
+    position: relative; /* ВАЖНО для позиционирования линии внутри */
 }
-.cell { 
-    width: 100px; height: 100px; 
-    border: 2px solid #333; 
-    display: flex; align-items: center; justify-content: center;
-    font-size: 2rem; cursor: pointer;
+
+/* Базовый стиль для выигрышной линии */
+.winning-line {
+    position: absolute;
+    background-color: red; /* Красный цвет */
+    border-radius: 2px;
+    transition: all 0.3s ease-in-out; /* Плавное появление */
+    z-index: 10; /* Поверх ячеек */
+    display: none; /* По умолчанию скрыта */
 }
-.cell.taken { cursor: not-allowed; }
+
+/* Модификаторы для разных типов линий (размеры для ячеек 100px + gap 5px) */
+
+/* Горизонтальные линии */
+.winning-line.horizontal {
+    height: 5px;
+    width: 0; /* Анимируется до 100% в JS */
+    left: 0;
+}
+
+/* Вертикальные линии */
+.winning-line.vertical {
+    width: 5px;
+    height: 0; /* Анимируется до 100% в JS */
+    top: 0;
+}
+
+/* Диагональные линии (длина вычисляется по Пифагору: sqrt(310^2 + 310^2) approx 438) */
+.winning-line.diagonal {
+    width: 5px;
+    height: 0; /* Анимируется до 438px в JS */
+    transform-origin: top center; /* Точка вращения */
+}

@@ -61,17 +61,128 @@ function renderGame() {
     showScreen("game-screen");
     document.getElementById("game-id-display").innerText = currentGame.id;
     const boardDiv = document.getElementById("board");
-    boardDiv.innerHTML = "";
+    
+    // ВАЖНО: Не очищай весь boardDiv.innerHTML = "", 
+    // иначе ты удалишь элемент #winning-line.
+    // Вместо этого удаляй только старые ячейки (.cell)
+    const oldCells = boardDiv.querySelectorAll('.cell');
+    oldCells.forEach(cell => cell.remove());
+
+    const statusMsg = document.getElementById("status-message");
+    statusMsg.innerText = ""; // Сброс статуса
 
     currentGame.board.forEach((row, rIdx) => {
         row.forEach((cell, cIdx) => {
             const cellDiv = document.createElement("div");
             cellDiv.className = `cell ${cell !== 0 ? 'taken' : ''}`;
             cellDiv.innerText = cell === 1 ? "X" : cell === 2 ? "O" : "";
-            cellDiv.onclick = () => makeMove(rIdx, cIdx);
+            // Обработчик клика только если клетка пуста
+            if (cell === 0) {
+                cellDiv.onclick = () => makeMove(rIdx, cIdx);
+            }
             boardDiv.appendChild(cellDiv);
         });
     });
+
+    // --- ДОБАВЛЯЕМ ПРОВЕРКУ ПОБЕДЫ ПОСЛЕ ОТРИСОВКИ ---
+    const winner = checkAndDrawWinningLine(currentGame.board);
+    if (winner) {
+        statusMsg.innerText = (winner === 1 ? "Вы победили!" : "Победил ИИ!");
+        statusMsg.style.color = (winner === 1 ? "green" : "red");
+        return; // Завершаем, ходить больше нельзя
+    }
+
+    // Проверка на ничью (если победителя нет, но и нулей нет)
+    if (!currentGame.board.flat().includes(0)) {
+        statusMsg.innerText = "Ничья!";
+        statusMsg.style.color = "blue";
+    }
 }
 
 function showError(msg) { document.getElementById("error-message").innerText = msg; }
+
+const WINNING_COMBOS = [
+    // Строки (type: 'h', index: 0,1,2)
+    { cells: [0, 1, 2], type: 'h', lineIdx: 0 },
+    { cells: [3, 4, 5], type: 'h', lineIdx: 1 },
+    { cells: [6, 7, 8], type: 'h', lineIdx: 2 },
+    // Столбцы (type: 'v', index: 0,1,2)
+    { cells: [0, 3, 6], type: 'v', lineIdx: 0 },
+    { cells: [1, 4, 7], type: 'v', lineIdx: 1 },
+    { cells: [2, 5, 8], type: 'v', lineIdx: 2 },
+    // Диагонали (type: 'd', index: 0-главная, 1-побочная)
+    { cells: [0, 4, 8], type: 'd', lineIdx: 0 },
+    { cells: [2, 4, 6], type: 'd', lineIdx: 1 }
+];
+
+// Функция проверки победителя и отрисовки линии
+function checkAndDrawWinningLine(board) {
+    const flatBoard = board.flat(); // Превращаем [3][3] в [9]
+    const lineEl = document.getElementById("winning-line");
+    
+    // Сбрасываем старую линию
+    lineEl.style.display = 'none';
+    lineEl.className = 'winning-line'; 
+    lineEl.style.width = '';
+    lineEl.style.height = '';
+    lineEl.style.transform = '';
+
+    for (let combo of WINNING_COMBOS) {
+        const [a, b, c] = combo.cells;
+        
+        // Если все три клетки заняты одним игроком (1 или 2) и не пустые (0)
+        if (flatBoard[a] && flatBoard[a] === flatBoard[b] && flatBoard[a] === flatBoard[c]) {
+            drawSVGLine(combo); // Рисуем линию
+            return flatBoard[a]; // Возвращаем ID победителя (1 или 2)
+        }
+    }
+    return null; // Победителя нет
+}
+
+// Функция позиционирования линии
+function drawSVGLine(combo) {
+    const lineEl = document.getElementById("winning-line");
+    const cellSize = 100;
+    const gap = 5;
+    const boardSize = 3 * cellSize + 2 * gap; // 310px
+    
+    lineEl.style.display = 'block'; // Показываем линию
+
+    if (combo.type === 'h') {
+        // Горизонтальная: смещаем вниз на индекс строки
+        lineEl.classList.add('horizontal');
+        // Центрируем по вертикали внутри строки: index * (size+gap) + size/2
+        const topPos = combo.lineIdx * (cellSize + gap) + cellSize / 2;
+        lineEl.style.top = `${topPos}px`;
+        // Запускаем анимацию ширины
+        setTimeout(() => lineEl.style.width = '100%', 10);
+        
+    } else if (combo.type === 'v') {
+        // Вертикальная: смещаем вправо на индекс столбца
+        lineEl.classList.add('vertical');
+        // Центрируем по горизонтали внутри столбца
+        const leftPos = combo.lineIdx * (cellSize + gap) + cellSize / 2;
+        lineEl.style.left = `${leftPos}px`;
+        // Запускаем анимацию высоты
+        setTimeout(() => lineEl.style.height = '100%', 10);
+        
+    } else if (combo.type === 'd') {
+        // Диагональ
+        lineEl.classList.add('diagonal');
+        const diagLength = Math.sqrt(Math.pow(boardSize, 2) + Math.pow(boardSize, 2));
+        
+        if (combo.lineIdx === 0) {
+            // Главная диагональ (сверху-слева вниз-справа)
+            lineEl.style.left = '0';
+            lineEl.style.top = '0';
+            lineEl.style.transform = 'rotate(-45deg)'; // Поворот на 45 градусов
+        } else {
+            // Побочная диагональ (сверху-справа вниз-слева)
+            lineEl.style.right = '0'; // Позиционируем от правого края
+            lineEl.style.top = '0';
+            lineEl.style.transform = 'rotate(45deg)'; // Поворот на 45 градусов
+        }
+        // Запускаем анимацию длины
+        setTimeout(() => lineEl.style.height = `${diagLength}px`, 10);
+    }
+}
