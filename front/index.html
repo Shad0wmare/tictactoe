@@ -1,36 +1,28 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Tic-Tac-Toe Go AI</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div id="app">
-        <h1>Крестики-Нолики (vs Go AI)</h1>
-        
-        <div id="menu">
-            <button onclick="createNewGame()">Новая игра</button>
-            <button onclick="showLoadInput()">Загрузить игру</button>
-        </div>
-
-        <div id="load-input" class="hidden">
-            <input type="text" id="uuid-field" placeholder="Введите UUID игры">
-            <button onclick="loadGame()">ОК</button>
-            <button onclick="showMenu()">Назад</button>
-        </div>
-
-        <div id="game-screen" class="hidden">
-            <p>ID игры: <span id="game-id-display"></span></p>
-            <div id="board" class="board">
-                <div id="winning-line" class="winning-line"></div>
-            </div>
-            <p id="status-message"></p>
-            <button onclick="showMenu()">В меню</button>
-        </div>
-        
-        <p id="error-message" class="error"></p>
+<div id="app">
+    <h1>Крестики-Нолики (Go app)</h1>
+    
+    <div id="screen-main" class="screen">
+        <button onclick="createNewGame()">Новая игра</button>
+        <button onclick="showScreen('screen-load')">Загрузить игру</button>
     </div>
-    <script src="app.js"></script>
-</body>
-</html>
+
+    <div id="screen-load" class="screen hidden">
+        <input type="text" id="uuid-field" placeholder="Введите UUID игры">
+        <button onclick="loadGame()">ОК</button>
+        <br><br>
+        <button onclick="showScreen('screen-main')">В меню</button>
+    </div>
+
+    <div id="screen-game" class="screen hidden">
+        <p><strong>ID игры:</strong> <span id="game-id-display"></span></p>
+        
+        <div id="board" class="board">
+            <div id="winning-line" class="winning-line"></div>
+        </div>
+        
+        <p id="status-message"></p>
+        <button onclick="showScreen('screen-main')">В меню</button>
+    </div>
+    
+    <p id="error-message" class="error"></p>
+</div>

@@ -1,11 +1,40 @@
-/* Родителю (сетке) добавляем относительное позиционирование */
+.hidden { display: none !important; }
+
+.screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+button {
+    padding: 10px 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background 0.2s;
+}
+
+button:hover { background-color: #0056b3; }
+
+.error { color: #dc3545; margin-top: 20px; text-align: center; }
+
 .board { 
     display: grid; 
     grid-template-columns: repeat(3, 100px); 
     grid-gap: 5px; 
-    position: relative; /* КРИТИЧЕСКИ ВАЖНО: линия будет внутри этого блока */
-    width: 310px;       /* Фиксируем ширину (3*100 + 2*5) */
-    height: 310px;      /* Фиксируем высоту */
+    position: relative;
+    width: 310px;
+    height: 310px;
 }
 
 .cell { 
@@ -16,42 +45,34 @@
 }
 .cell.taken { cursor: not-allowed; }
 
-/* Базовый стиль для выигрышной линии */
 .winning-line {
     position: absolute;
-    background-color: red; /* Красный цвет */
+    background-color: red;
     border-radius: 2px;
-    transition: all 0.3s ease-in-out; /* Плавное появление */
-    z-index: 10; /* Поверх ячеек */
-    display: none; /* По умолчанию скрыта */
+    transition: all 0.3s ease-in-out;
+    z-index: 10;
+    display: none;
 }
 
-/* Модификаторы для разных типов линий (размеры для ячеек 100px + gap 5px) */
-
-/* Горизонтальные линии */
 .winning-line.horizontal {
     height: 5px;
-    width: 0; /* Анимируется до 100% (т.е. до 310px) */
+    width: 0; 
     left: 0;
-    margin-top: -3px; /* Центрируем саму толщину линии */
+    margin-top: -3px;
 }
 
-/* Вертикальные линии */
 .winning-line.vertical {
     width: 6px;
-    height: 0; /* Анимируется до 100% */
+    height: 0;
     top: 0;
-    margin-left: -3px; /* Центрируем саму толщину линии */
+    margin-left: -3px;
 }
 
-/* Диагональные линии (длина вычисляется по Пифагору: sqrt(310^2 + 310^2) approx 438) */
 .winning-line.diagonal {
     width: 6px;
     height: 0;
-    /* Указываем, что точка вращения — левый верхний угол */
     transform-origin: 0 0; 
     position: absolute;
     top: 0;
-    /* Убираем лишние отступы */
     margin: 0;
 }
