@@ -1,5 +1,9 @@
 .hidden { display: none !important; }
 
+body h1 {
+    text-align: center;
+}
+
 .screen {
     display: flex;
     flex-direction: column;
