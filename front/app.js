@@ -59,41 +59,57 @@ async function makeMove(row, col) {
 
 function renderGame() {
     showScreen("game-screen");
-    document.getElementById("game-id-display").innerText = currentGame.id;
-    const boardDiv = document.getElementById("board");
     
-    // ВАЖНО: Не очищай весь boardDiv.innerHTML = "", 
-    // иначе ты удалишь элемент #winning-line.
-    // Вместо этого удаляй только старые ячейки (.cell)
-    const oldCells = boardDiv.querySelectorAll('.cell');
-    oldCells.forEach(cell => cell.remove());
+    const gameIdDisplay = document.getElementById("game-id-display");
+    if (gameIdDisplay) gameIdDisplay.innerText = currentGame.id;
 
-    const statusMsg = document.getElementById("status-message");
-    statusMsg.innerText = ""; // Сброс статуса
-
-    currentGame.board.forEach((row, rIdx) => {
-        row.forEach((cell, cIdx) => {
-            const cellDiv = document.createElement("div");
-            cellDiv.className = `cell ${cell !== 0 ? 'taken' : ''}`;
-            cellDiv.innerText = cell === 1 ? "X" : cell === 2 ? "O" : "";
-            // Обработчик клика только если клетка пуста
-            if (cell === 0) {
-                cellDiv.onclick = () => makeMove(rIdx, cIdx);
-            }
-            boardDiv.appendChild(cellDiv);
-        });
-    });
-
-    // --- ДОБАВЛЯЕМ ПРОВЕРКУ ПОБЕДЫ ПОСЛЕ ОТРИСОВКИ ---
-    const winner = checkAndDrawWinningLine(currentGame.board);
-    if (winner) {
-        statusMsg.innerText = (winner === 1 ? "Вы победили!" : "Победил ИИ!");
-        statusMsg.style.color = (winner === 1 ? "green" : "red");
-        return; // Завершаем, ходить больше нельзя
+    const boardDiv = document.getElementById("board");
+    if (!boardDiv) {
+        console.error("Контейнер #board не найден в HTML!");
+        return;
     }
 
-    // Проверка на ничью (если победителя нет, но и нулей нет)
-    if (!currentGame.board.flat().includes(0)) {
+    // 1. ОЧИСТКА: Удаляем только ячейки, НЕ трогая линию зачеркивания
+    const cells = boardDiv.querySelectorAll('.cell');
+    cells.forEach(cell => cell.remove());
+
+    const statusMsg = document.getElementById("status-message");
+    if (statusMsg) statusMsg.innerText = "";
+
+    // 2. ОТРИСОВКА ЯЧЕЕК
+    if (currentGame.board && currentGame.board.length > 0) {
+        currentGame.board.forEach((row, rIdx) => {
+            row.forEach((cell, cIdx) => {
+                const cellDiv = document.createElement("div");
+                cellDiv.className = `cell ${cell !== 0 ? 'taken' : ''}`;
+                
+                // Отображаем X (1) или O (2)
+                if (cell === 1) cellDiv.innerText = "X";
+                if (cell === 2) cellDiv.innerText = "O";
+
+                // Обработка клика: только если клетка пуста (0)
+                if (cell === 0) {
+                    cellDiv.onclick = () => makeMove(rIdx, cIdx);
+                }
+                
+                boardDiv.appendChild(cellDiv);
+            });
+        });
+    }
+
+    // 3. ЛОГИКА ЗАВЕРШЕНИЯ (Линия и статус)
+    const winner = checkAndDrawWinningLine(currentGame.board);
+    if (winner) {
+        if (statusMsg) {
+            statusMsg.innerText = (winner === 1 ? "Вы победили!" : "Победил ИИ!");
+            statusMsg.style.color = (winner === 1 ? "green" : "red");
+        }
+        return; 
+    }
+
+    // Проверка на ничью
+    const isDraw = !currentGame.board.flat().includes(0);
+    if (isDraw && statusMsg) {
         statusMsg.innerText = "Ничья!";
         statusMsg.style.color = "blue";
     }
