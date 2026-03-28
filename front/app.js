@@ -1,4 +1,4 @@
-const API_URL = "http://shadowchat.ru:8080";
+const API_URL = "http://88.218.67.103:8080";
 let currentGame = { id: "", board: [] };
 
 // Показать/Скрыть экраны
