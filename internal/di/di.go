@@ -20,7 +20,7 @@ func Init() *handler.GameHandler {
 
 func StartServer(handler *handler.GameHandler) {
 	mux := http.NewServeMux()
-	fs := http.FileServer(http.Dir("./front"))
+	fs := http.FileServer(http.Dir("./gui"))
 
 	mux.Handle("/", fs)
 	mux.HandleFunc("POST /game", handler.CreateGame)
