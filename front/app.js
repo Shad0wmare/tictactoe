@@ -41,7 +41,7 @@ async function makeMove(row, col) {
     newBoard[row][col] = 1;
 
     try {
-        const res = await fetch(`${API_URL}/game/${currentGame.id}/move`, {
+        const res = await fetch(`${API_URL}/game/${currentGame.id}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ board: newBoard })
