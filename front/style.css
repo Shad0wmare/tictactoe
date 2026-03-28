@@ -3,7 +3,6 @@
     display: grid; 
     grid-template-columns: repeat(3, 100px); 
     grid-gap: 5px; 
-    margin: 20px auto; /* Центрируем поле на странице */
     position: relative; /* КРИТИЧЕСКИ ВАЖНО: линия будет внутри этого блока */
     width: 310px;       /* Фиксируем ширину (3*100 + 2*5) */
     height: 310px;      /* Фиксируем высоту */

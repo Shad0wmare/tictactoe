@@ -158,46 +158,53 @@ function checkAndDrawWinningLine(board) {
 // Функция позиционирования линии
 function drawSVGLine(combo) {
     const lineEl = document.getElementById("winning-line");
+    if (!lineEl) return;
+
     const cellSize = 100;
     const gap = 5;
-    const boardSize = 310; // Фиксированный размер 3*100 + 2*5
-    const centerOffset = 50; // Центр первой ячейки
+    const boardSize = 310;
+    const center = cellSize / 2; // 50px
 
-    lineEl.style.display = 'block';
-    lineEl.className = 'winning-line'; 
-    lineEl.classList.add(combo.type === 'h' ? 'horizontal' : 
-                         combo.type === 'v' ? 'vertical' : 'diagonal');
-
-    // Сбрасываем стили от предыдущих отрисовок
-    lineEl.style.top = "";
-    lineEl.style.left = "";
-    lineEl.style.right = "";
+    // 1. Полный сброс всех стилей перед отрисовкой
+    lineEl.style.display = "block";
     lineEl.style.width = "0";
     lineEl.style.height = "0";
-    lineEl.style.transform = "";
+    lineEl.style.top = "auto";
+    lineEl.style.left = "auto";
+    lineEl.style.right = "auto";
+    lineEl.style.transform = "none";
+    lineEl.style.transformOrigin = "center";
 
     if (combo.type === 'h') {
-        const topPos = combo.lineIdx * (cellSize + gap) + centerOffset;
-        lineEl.style.top = `${topPos}px`;
-        lineEl.style.left = "0";
-        // 100% теперь будет равно 310px, так как .board ограничен
-        setTimeout(() => lineEl.style.width = '100%', 10);
+        // ГОРИЗОНТАЛЬ
+        const y = combo.lineIdx * (cellSize + gap) + center;
+        lineEl.style.top = `${y - 3}px`; // -3 для центровки толщины (6px)
+        lineEl.style.left = "5px";
+        lineEl.style.height = "6px";
+        setTimeout(() => lineEl.style.width = "300px", 10);
 
     } else if (combo.type === 'v') {
-        const leftPos = combo.lineIdx * (cellSize + gap) + centerOffset;
-        lineEl.style.left = `${leftPos}px`;
-        lineEl.style.top = "0";
-        setTimeout(() => lineEl.style.height = '100%', 10);
+        // ВЕРТИКАЛЬ
+        const x = combo.lineIdx * (cellSize + gap) + center;
+        lineEl.style.left = `${x - 3}px`;
+        lineEl.style.top = "5px";
+        lineEl.style.width = "6px";
+        setTimeout(() => lineEl.style.height = "300px", 10);
 
     } else if (combo.type === 'd') {
-        const diagLength = Math.sqrt(Math.pow(boardSize, 2) + Math.pow(boardSize, 2));
-        lineEl.style.top = "0";
-        
+        // ДИАГОНАЛИ
+        lineEl.style.width = "6px";
+        lineEl.style.transformOrigin = "50% 0"; // Вращаем от центра верхней точки
+        const diagLength = Math.sqrt(2) * boardSize - 20; // Чуть короче полной диагонали
+
         if (combo.lineIdx === 0) {
+            // Главная (0,0 -> 2,2)
+            lineEl.style.top = "0";
             lineEl.style.left = "0";
             lineEl.style.transform = "rotate(-45deg)";
         } else {
-            // Для побочной диагонали ставим точку в правый верхний угол
+            // Побочная (0,2 -> 2,0)
+            lineEl.style.top = "0";
             lineEl.style.left = `${boardSize}px`;
             lineEl.style.transform = "rotate(45deg)";
         }
