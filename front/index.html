@@ -9,17 +9,14 @@
     <div id="screen-load" class="screen hidden">
         <input type="text" id="uuid-field" placeholder="Введите UUID игры">
         <button onclick="loadGame()">ОК</button>
-        <br><br>
-        <button onclick="showScreen('screen-main')">В меню</button>
+        <button onclick="showScreen('screen-main')">Назад</button>
     </div>
 
     <div id="screen-game" class="screen hidden">
-        <p><strong>ID игры:</strong> <span id="game-id-display"></span></p>
-        
+        <p>ID: <span id="game-id-display"></span></p>
         <div id="board" class="board">
             <div id="winning-line" class="winning-line"></div>
         </div>
-        
         <p id="status-message"></p>
         <button onclick="showScreen('screen-main')">В меню</button>
     </div>
